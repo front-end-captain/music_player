@@ -12,15 +12,15 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/rank'
-    },
-    {
-      path: '/rank',
-      component: Rank
+      redirect: '/recommend'
     },
     {
       path: '/recommend',
       component: Recommend
+    },
+    {
+      path: '/rank',
+      component: Rank
     },
     {
       path: '/singer',

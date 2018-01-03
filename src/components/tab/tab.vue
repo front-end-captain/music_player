@@ -1,10 +1,10 @@
 <template>
   <div class="tab">
-    <router-link tag="div" to="/rank" class="tab-item">
-      <span class="tab-link">排行</span>
-    </router-link>
     <router-link tag="div" to="/recommend" class="tab-item">
       <span class="tab-link">推荐</span>
+    </router-link>
+    <router-link tag="div" to="/rank" class="tab-item">
+      <span class="tab-link">排行</span>
     </router-link>
     <router-link tag="div" to="/singer" class="tab-item">
       <span class="tab-link">歌手</span>
