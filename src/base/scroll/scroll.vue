@@ -1,5 +1,5 @@
 <template>
-  <div  ref="wrapper">
+  <div ref="wrapper">
     <slot></slot>
   </div>
 </template>
@@ -83,9 +83,11 @@ export default {
     refresh() {
       this.scroll && this.scroll.refresh();
     },
+    // 滚动到指定位置
     scrollTo() {
       this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
     },
+    // 滚动到某一个元素的位置
     scrollToElement() {
       this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
     }

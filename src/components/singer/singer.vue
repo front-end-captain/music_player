@@ -1,12 +1,13 @@
 <template>
-  <div>
-    歌手页
+  <div class="singer" ref="singer">
+    <list-view :data="singers" ref="list"></list-view>
   </div>
 </template>
 
 <script>
 import { getSingerList } from 'api/singer.js'
 import Singer from 'common/js/singer.js'
+import ListView from 'base/listview/listview.vue'
 
 /**
  * 从服务端获取的数据 这个数组的长度大概为 100
@@ -87,6 +88,9 @@ export default {
       singers: []
     }
   },
+  components: {
+    ListView
+  },
   created() {
     this._getSingerData()
   },
@@ -155,5 +159,9 @@ export default {
 
 
 <style lang="stylus" scoped>
-
+  .singer
+    position: fixed
+    top: 88px
+    bottom: 0
+    width: 100%
 </style>
