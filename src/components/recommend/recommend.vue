@@ -20,6 +20,9 @@
           </ul>
         </div>
       </div>
+      <div class="loading-container" v-show="!disclist.length > 0">
+        <loading></loading>
+      </div>
     </scroll>
   </div>
 </template>
@@ -28,7 +31,8 @@
 import { getRecommendData, getDiscList } from "api/recommend.js";
 import { ERR_OK } from "api/config.js";
 import Slider from "base/slider/slider.vue";
-import Scroll from 'base/scroll/scroll.vue'
+import Scroll from 'base/scroll/scroll.vue';
+import Loading from 'base/loading/loading.vue';
 
 export default {
   name: "recommend",
@@ -48,7 +52,8 @@ export default {
   },
   components: {
     Slider,
-    Scroll
+    Scroll,
+    Loading
   },
   created() {
     this._getRecommendData();

@@ -9,7 +9,7 @@ function param ( data ) {
   let url = '';
   for ( var k in data ) {
     let value = data[k] !== undefined ? data[k] : '';
-    url += `&${k}=${encodeURIComponent(value)}}`
+    url += `&${k}=${encodeURIComponent(value)}`
   }
 
   // 将 URL 中的第一个 & 去掉
