@@ -2,7 +2,7 @@
   <swiper v-bind:options='swiperOption'>
     <swiper-slide v-for='(slider, index) in swiperSliders' v-bind:key='index'>
       <a v-bind:href="slider.linkUrl">
-        <img v-bind:src='slider.picUrl'>
+        <img v-bind:src='slider.picUrl' @load="loadImg">
       </a>
     </swiper-slide>
     <div class='swiper-pagination' slot='pagination'></div>
@@ -30,6 +30,10 @@ export default {
     swiperSliders: {
       type: Array,
       default: []
+    },
+    loadImg: {
+      type: Function,
+      default: null
     }
   }
 };
