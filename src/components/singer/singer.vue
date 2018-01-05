@@ -1,6 +1,11 @@
 <template>
   <div class="singer" ref="singer">
-    <list-view :data="singers" ref="list"></list-view>
+    <list-view
+      :data="singers"
+      ref="list"
+      @select="selectSinger">
+    </list-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -8,6 +13,7 @@
 import { getSingerList } from 'api/singer.js'
 import Singer from 'common/js/singer.js'
 import ListView from 'base/listview/listview.vue'
+import { mapMutations } from 'vuex'
 
 /**
  * 从服务端获取的数据 这个数组的长度大概为 100
@@ -95,9 +101,14 @@ export default {
     this._getSingerData()
   },
   methods: {
+    selectSinger( singer ) {
+      this.$router.push({
+        path: `/singer/${singer.id}`
+      })
+      this.setSinger( singer )
+    },
     _getSingerData() {
       getSingerList().then( ( response ) => {
-        console.log( response );
         if ( response.code === 0 ) {
           this.singers = this._normalizeSinger( response.data.list )
         }
@@ -150,8 +161,10 @@ export default {
         return a.title.localeCompare( b.title );
       })
       return hot.concat(ret)
-    }
-
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
 
   }
 }

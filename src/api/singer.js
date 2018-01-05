@@ -20,7 +20,7 @@ const getSingerList = () => {
   return jsonp(url, query, options)
 }
 
-const getSingerDetail = () => {
+const getSingerDetail = ( singerId ) => {
   const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg'
 
   const query = Object.assign({}, commonConfig, {
@@ -29,7 +29,7 @@ const getSingerDetail = () => {
     platform: 'yqq',
     order: 'listen',
     begin: 0,
-    num: 80,
+    num: 30,
     songstatus: 1,
     singermid: singerId
   })

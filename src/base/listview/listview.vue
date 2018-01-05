@@ -13,7 +13,12 @@
         <h2 class="list-group-title">{{ group.title }}</h2>
         <ul>
           <!-- 某一组歌手列表 -->
-          <li v-for="(item, j) in group.items" :key="j" class="list-group-item">
+          <li
+            v-for="(item, j) in group.items"
+            class="list-group-item"
+            :key="j"
+            @click="selectItem(item)"
+            >
             <img class="avatar" v-lazy="item.avatar">
             <span class="name">{{ item.name }}</span>
           </li>
@@ -106,6 +111,12 @@ export default {
 
   methods: {
     /**
+     * @description 查看歌手详情
+     */
+    selectItem( item ) {
+      this.$emit( 'select', item );
+    },
+    /**
      * @description touchstart 事件监听程序
      */
     onShortcutTouchStart( event ) {
@@ -195,7 +206,7 @@ export default {
         // 某一个分组列表的高度上限 和 高度下限
         let heightCeil  = listGroupsHeight[j]
         let heightFloor = listGroupsHeight[j + 1]
-        console.log( heightCeil, heightFloor, newScrollY );
+
         if ( -newScrollY >= heightCeil && -newScrollY < heightFloor ) {
           this.currentIndex = j
           this.diff = heightFloor + newScrollY
