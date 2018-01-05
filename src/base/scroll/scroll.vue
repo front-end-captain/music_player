@@ -36,7 +36,14 @@ export default {
     refreshDelay: {
       type: Number,
       default: 20
+    },
+
+    // 是否监听滚动事件
+    listenScroll: {
+      type: Boolean,
+      default: false
     }
+
   },
   mounted() {
     setTimeout(() => {
@@ -53,10 +60,11 @@ export default {
         click: this.click
       });
 
+      // 监听 scroll 事件，获取滚动的位置
       if (this.listenScroll) {
-        let me = this;
+        let _that = this;
         this.scroll.on("scroll", pos => {
-          me.$emit("scroll", pos);
+          _that.$emit("scroll", pos);
         });
       }
 
