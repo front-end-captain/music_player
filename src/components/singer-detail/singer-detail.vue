@@ -1,13 +1,16 @@
 <template>
   <transition name="slider">
-    <div class="singer-detail">
-      歌手详情
-    </div>
+    <music-list
+      :songs="songs"
+      :title="title"
+      :bgImg="bgImg"
+    ></music-list>
   </transition>
 </template>
 
 <script>
 
+import MusicList from 'components/music-list/music-list.vue'
 import { mapGetters } from 'vuex'
 import { getSingerDetail } from 'api/singer.js'
 import { ERR_OK } from 'api/config.js'
@@ -22,12 +25,17 @@ export default {
     }
   },
   computed: {
+    title() {
+      return this.singer.name
+    },
+    bgImg() {
+      return this.singer.avatar
+    },
     ...mapGetters({
       singer: 'getSinger'
     })
   },
   created() {
-    console.log( this.singer );
     this._getSingerDetail();
   },
   methods: {
@@ -41,22 +49,26 @@ export default {
       getSingerDetail( this.singer.id ).then( response => {
         if ( response.code === ERR_OK ) {
           this.songs = this._normalizeSonglist( response.data.list );
-          console.log( this.songs );
         }
       })
    },
     _normalizeSonglist( list ) {
       let ret = [];
-      list.forEach(element => {
-        let { musicData } = element;
+      list.forEach( item => {
+        let { musicData } = item;
+
         if ( musicData.songid && musicData.albummid ) {
-          ret.push( createSong( musicData ) )
+          createSong( musicData ).then( newSong => {
+            ret.push( newSong )
+          })
         }
       });
       return ret;
     }
   },
-
+  components: {
+    MusicList
+  }
 
 }
 </script>
