@@ -72,7 +72,7 @@ async function createSong ( musicData ) {
     album: musicData.albumname,
     duration: musicData.interval,
     img: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: songUrl
+    url: 'http://localhost:8000/api/getSong'
   })
 }
 

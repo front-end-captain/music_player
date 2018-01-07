@@ -23,7 +23,7 @@
       @scroll="scroll"
       >
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list :songs="songs" @select="selectItem"></song-list>
       </div>
       <div class="loading-container" v-show="!songs.length > 0">
         <loading></loading>
@@ -36,6 +36,7 @@
 import Scroll from 'base/scroll/scroll.vue'
 import SongList from 'base/song-list/song-list.vue'
 import Loading from 'base/loading/loading.vue'
+import { mapActions } from 'vuex'
 
 const TITLE_HEIGHT = 40;
 export default {
@@ -82,7 +83,18 @@ export default {
     },
     random() {
 
-    }
+    },
+
+    // 选择即播放
+    selectItem( song, index ) {
+      this.selectPlay( {
+        list: this.songs,
+        index: index
+      })
+    },
+    ...mapActions([
+      'selectPlay'
+    ])
   },
   watch: {
     scrollY( newScrollY ) {
