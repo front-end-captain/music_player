@@ -19,11 +19,13 @@ import { createSong } from 'common/js/song.js'
 
 export default {
   name: 'singerDetail',
+
   data() {
     return {
       songs: []
     }
   },
+
   computed: {
     title() {
       return this.singer.name
@@ -35,10 +37,14 @@ export default {
       singer: 'getSinger'
     })
   },
+
   created() {
     this._getSingerDetail();
   },
+
   methods: {
+
+    // 获取歌手详情 若是 id 不存在 则跳转至歌手列表页
     _getSingerDetail() {
       if ( !this.singer.id ) {
         this.$router.push({
@@ -48,13 +54,17 @@ export default {
       }
       getSingerDetail( this.singer.id ).then( response => {
         if ( response.code === ERR_OK ) {
-          this.songs = this._normalizeSonglist( response.data.list );
+          this._normalizeSonglist( response.data.list ).then( ret => {
+            this.songs = ret;
+          });
         }
       })
-   },
-    _normalizeSonglist( list ) {
+    },
+
+    // 格式化歌手详情数据 剔除一些无用数据
+    async _normalizeSonglist( list ) {
       let ret = [];
-      list.forEach( item => {
+      await list.forEach( item => {
         let { musicData } = item;
 
         if ( musicData.songid && musicData.albummid ) {
@@ -66,10 +76,10 @@ export default {
       return ret;
     }
   },
+
   components: {
     MusicList
   }
-
 }
 </script>
 

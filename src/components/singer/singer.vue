@@ -89,24 +89,33 @@ const HOT_SINGER_LENGTH = 10
 const HOT_NAME = '热门'
 export default {
   name: 'singer',
+
   data () {
     return {
       singers: []
     }
   },
+
   components: {
     ListView
   },
+
   created() {
     this._getSingerData()
   },
+
   methods: {
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    }),
+
     selectSinger( singer ) {
       this.$router.push({
         path: `/singer/${singer.id}`
       })
       this.setSinger( singer )
     },
+
     _getSingerData() {
       getSingerList().then( ( response ) => {
         if ( response.code === 0 ) {
@@ -114,7 +123,8 @@ export default {
         }
       })
     },
-    _normalizeSinger(list) {
+
+    _normalizeSinger( list ) {
       let map = {
         hot: {
           title: HOT_NAME,
@@ -145,6 +155,7 @@ export default {
           id: item.Fsinger_mid
         }))
       })
+
       // 处理 map 获取一个有序的列表
       let ret = []
       let hot = []
@@ -156,16 +167,13 @@ export default {
           hot.push(val)
         }
       }
+
       // 排序
       ret.sort((a, b) => {
         return a.title.localeCompare( b.title );
       })
       return hot.concat(ret)
-    },
-    ...mapMutations({
-      setSinger: 'SET_SINGER'
-    })
-
+    }
   }
 }
 </script>

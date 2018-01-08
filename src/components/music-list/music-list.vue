@@ -1,9 +1,15 @@
 <template>
   <div class="music-list">
+
+    <!-- 顶部回退按钮以及歌曲标题 开始 -->
     <div class="back" @click="back">
       <i class="icon-back"></i>
     </div>
     <h1 class="title" v-html="title"></h1>
+    <!-- 顶部回退按钮以及歌曲标题 结束 -->
+
+
+    <!-- 背景图 开始 -->
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="play-wrapper">
         <div ref="playBtn" v-show="songs.length > 0" class="play" @click="random">
@@ -13,6 +19,10 @@
       </div>
       <div class="filter" ref="filter"></div>
     </div>
+    <!-- 背景图 结束 -->
+
+
+    <!-- 歌曲列表 开始 -->
     <div class="bg-layer" ref="layer"></div>
     <scroll
       :data="songs"
@@ -29,6 +39,8 @@
         <loading></loading>
       </div>
     </scroll>
+    <!-- 歌曲列表 结束 -->
+
   </div>
 </template>
 
@@ -39,8 +51,10 @@ import Loading from 'base/loading/loading.vue'
 import { mapActions } from 'vuex'
 
 const TITLE_HEIGHT = 40;
+
 export default {
   name: 'music-list',
+
   props: {
     bgImg: {
       type: String,
@@ -55,47 +69,71 @@ export default {
       default: ''
     }
   },
+
   data() {
     return {
       scrollY: 0
     }
   },
+
+  // 开启监听 scroll 事件
   created() {
     this.probeType = 3;
     this.isListenScroll = true;
   },
+
   mounted() {
+
+    // 背景图片高度
     this.imageHeight = this.$refs.bgImage.clientHeight;
+
+    // 歌曲列表向上卷去的最大距离
     this.minTranslateY = -this.imageHeight + TITLE_HEIGHT;
+
+    // 歌曲列表距离顶部的 top 值为背景图片高度
     this.$refs.list.$el.style.top = this.imageHeight + 'px'
   },
+
   computed: {
     bgStyle() {
       return `background-image:url(${this.bgImg})`
     }
   },
+
   methods: {
+    ...mapActions([
+      'selectPlay'
+    ]),
+
+    // 回退
     back() {
       this.$router.back();
     },
+
+    // scroll 事件监听程序
     scroll( position ) {
       this.scrollY = position.y;
     },
+
+    // 随机播放全部
     random() {
 
     },
 
     // 选择即播放
+    // currentIndex = index
+    // playList = this.songs
+    // sequenceList = this.songs
+    // fullScreen = true
+    // playing = true
     selectItem( song, index ) {
       this.selectPlay( {
         list: this.songs,
         index: index
       })
-    },
-    ...mapActions([
-      'selectPlay'
-    ])
+    }
   },
+
   watch: {
     scrollY( newScrollY ) {
 
@@ -129,6 +167,7 @@ export default {
       this.$refs.bgImage.style.transform = `scale(${scale})`
     }
   },
+
   components: {
     Scroll,
     SongList,

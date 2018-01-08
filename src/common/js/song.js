@@ -59,18 +59,19 @@ function getSongUrl ( songmid ) {
  * @param {*} musicData
  */
 async function createSong ( musicData ) {
-  let songUrl = ''
-  await getSongUrl( musicData.songmid ).then( url => {
-    songUrl = url
-  })
+  // let songUrl = ''
+  // await getSongUrl( musicData.songmid ).then( url => {
+  //   songUrl = url
+  // })
 
+  // duration: musicData.interval,
   return new Song({
     id: musicData.songid,
     mid: musicData.songmid,
     singer: filterSinger( musicData.singer ),
     name: musicData.songname,
     album: musicData.albumname,
-    duration: musicData.interval,
+    duration: 282.842268,
     img: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
     url: 'http://localhost:8000/api/getSong'
   })

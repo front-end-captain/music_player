@@ -1,6 +1,7 @@
 <template>
   <div class="player" v-show="playList.length > 0">
 
+    <!-- 正常播放器 开始 -->
     <transition
       name="normal"
       @enter="enter"
@@ -9,11 +10,15 @@
       @after-leave="afterLeave"
       >
       <div class="normal-player" v-show="fullScreen">
+
+        <!-- 播放器背景 开始 -->
         <div class="background">
           <img :src="currentSong.img" width="100%" height="100%">
         </div>
+        <!-- 播放器背景 结束 -->
 
-        <!-- 顶部标题和返回按钮 -->
+
+        <!-- 顶部标题和返回按钮 开始 -->
         <div class="top">
           <div class="back" @click="close">
             <i class="icon-back"></i>
@@ -21,8 +26,10 @@
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
         </div>
+        <!-- 顶部标题和返回按钮 结束 -->
 
-        <!-- 唱片区域和歌词 -->
+
+        <!-- 唱片区域和歌词 开始 -->
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper" >
@@ -32,12 +39,22 @@
             </div>
           </div>
         </div>
+        <!-- 唱片区域和歌词 结束 -->
 
-        <!-- 底部操作区域 -->
+
+        <!-- 底部操作区域 开始 -->
         <div class="bottom">
+          <!-- 进度条 -->
+          <div class="progress-wrapper">
+            <span class="time time-l">{{ foramtTime( currentTime ) }}</span>
+            <div class="progress-bar-wrapper">
+              <progress-bar :percent="percent" @percent="onPercentChange"></progress-bar>
+            </div>
+            <span class="time time-r">{{ foramtTime( currentSong.duration ) }}</span>
+          </div>
           <div class="operators">
-            <div class="icon i-left">
-              <i class="icon-sequence"></i>
+            <div class="icon i-left" @click="changeMode">
+              <i :class="iconMode"></i>
             </div>
             <div class="icon i-left">
               <i class="icon-prev" @click="prevSong"></i>
@@ -53,10 +70,14 @@
             </div>
           </div>
         </div>
+        <!-- 底部操作区域 结束 -->
+
       </div>
     </transition>
+    <!-- 正常播放器 结束 -->
 
-    <!-- 底部迷你播放器 -->
+
+    <!-- 底部迷你播放器 开始 -->
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
@@ -67,17 +88,28 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
-          <i :class="miniIcon" @click.stop="togglePlayState"></i>
+          <progress-circle :radius="radius" :percent="percent">
+            <i :class="miniIcon" class="icon-mini" @click.stop="togglePlayState"></i>
+          </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
+    <!-- 底部迷你播放器 结束 -->
 
-    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error"></audio>
+    <!-- 音频播放 -->
+    <audio
+      :src="currentSong.url"
+      ref="audio"
+      @canplay="ready"
+      @error="error"
+      @timeupdate="updateTime"
+      @ended="end"></audio>
   </div>
 </template>
+
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
@@ -85,11 +117,18 @@ import { mapGetters, mapMutations } from 'vuex'
 // https://github.com/HenrikJoreteg/create-keyframe-animation
 import animations from 'create-keyframe-animation'
 
+import ProgressBar from 'base/progress-bar/progress-bar.vue'
+import ProgressCircle  from 'base/progress-circle/progress-circle.vue'
+import { playmode } from 'common/js/config.js'
+import { shuffle } from 'common/js/utils.js'
+
 export default {
   name: 'player',
   data() {
     return {
-      songReady: false
+      songReady: false,
+      currentTime: 0,
+      radius: 32
     }
   },
   computed: {
@@ -99,40 +138,61 @@ export default {
     miniIcon() {
       return this.playing ? 'icon-play-mini' : 'icon-pause-mini'
     },
+    iconMode () {
+      return this.mode === playmode.sequence
+        ? 'icon-sequence'
+        : this.mode === playmode.loop
+          ? 'icon-loop'
+          : 'icon-random';
+    },
     cdClassName() {
       return this.playing ? 'play' : 'play-pause'
+    },
+    percent() {
+      return this.currentTime / this.currentSong.duration;
     },
     ...mapGetters([
       'fullScreen',
       'playList',
       'currentSong',
       'playing',
-      'currentIndex'
+      'currentIndex',
+      'mode',
+      'sequenceList'
     ])
   },
 
   methods: {
+     ...mapMutations({
+      shiftFullScreen: 'SET_FULLSCREEN',
+      setPlayState: 'SET_PLAYING_STATE',
+      setCurrentIndex: 'SET_CURRENTINDEX',
+      setPlayMode: 'SET_PLAY_MODE',
+      setPlayList: 'SET_PLAYLIST'
+    }),
+
     // 该函数执行表示歌曲资源已经准备好 从而可以进行切歌操作
     ready() {
       this.songReady = true;
-      console.log( 'ready' );
 
     },
+    // 关闭全屏播放
     close() {
       this.shiftFullScreen( false );
     },
+
+    // 打开全屏播放
     open() {
       this.shiftFullScreen( true );
     },
 
     // 切换播放 暂停
     togglePlayState() {
-      this.changePlayState( !this.playing )
+      this.setPlayState( !this.playing )
     },
 
     // 上一首歌曲
     prevSong() {
-      console.log( this.songReady );
       if ( !this.songReady ) {
         return;
       }
@@ -143,7 +203,7 @@ export default {
       this.setCurrentIndex( index - 1 )
       if ( !this.playing ) {
         this.togglePlayState();
-        this.songReady = false;
+        this.songReady = true;
       }
     },
 
@@ -159,17 +219,62 @@ export default {
       this.setCurrentIndex( index + 1 )
       if ( !this.playing ) {
         this.togglePlayState();
-        this.songReady = false;
+        this.songReady = true;
       }
     },
+
+    // 音频播放错误事件处理程序
     error() {
       this.songReady = false;
     },
-    ...mapMutations({
-      shiftFullScreen: 'SET_FULLSCREEN',
-      changePlayState: 'SET_PLAYING_STATE',
-      setCurrentIndex: 'SET_CURRENTINDEX'
-    }),
+
+    // audio 元素 timeUpdate 事件处理程序
+    updateTime( event ) {
+      this.currentTime = event.target.currentTime;
+    },
+
+    // 播放进度改变
+    onPercentChange( newPercent ) {
+      this.$refs.audio.currentTime = newPercent * this.currentSong.duration;
+      this.currentTime = newPercent * this.currentSong.duration;
+    },
+
+    // 改变播放模式 随机 / 循环 / 顺序
+    changeMode() {
+      let currentMode = (this.mode + 1) % 3;
+      this.setPlayMode( currentMode );
+      let list = null;
+      if ( this.playmode === playmode.random ) {
+        list = shuffle( this.sequenceList );
+      } else {
+        list = this.sequenceList;
+      }
+
+      this._resetCurrentIndex( list )
+      this.setPlayList( list );
+    },
+
+    end( event ) {
+      if ( this.mode === playmode.loop ) {
+        this.loop();
+      } else {
+        this.nextSong()
+      }
+    },
+
+    loop() {
+      this.$refs.audio.currentTime = 0;
+      this.$refs.audio.play();
+      this.setPlayState( true );
+    },
+    _resetCurrentIndex( list ) {
+      let index = list.findIndex( ( item ) => {
+        return item.id === this.currentSong.id;
+      });
+      this.setCurrentIndex( index );
+    },
+
+    // 入场动画
     enter( element, done ) {
       const { x, y, scale } = this.getInitPosAndScale();
       let animation = {
@@ -194,34 +299,54 @@ export default {
 
       animations.runAnimation( this.$refs.cdWrapper, 'move', done )
     },
+    // 入场之后动画
     afterEnter( element ) {
       animations.unregisterAnimation('move')
       this.$refs.cdWrapper.style.animation = ''
     },
+    // 退场动画
     leave( element, done ) {
       this.$refs.cdWrapper.style.transition = 'all 0.4s';
       const { x, y, scale } = this.getInitPosAndScale();
       this.$refs.cdWrapper.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
       this.$refs.cdWrapper.addEventListener( 'transitionend', done );
     },
+    // 退场之后动画
     afterLeave( element ) {
       this.$refs.cdWrapper.style.transition = '';
       this.$refs.cdWrapper.style.transform = '';
     },
+
+    // 获取歌曲图片初始位置以及缩放比例
     getInitPosAndScale() {
-      const targetWidth = 40;
-      const paddingLeft = 40;
-      const paddingBottom = 30;
-      const paddingTop = 80;
-      const width = window.innerWidth * 0.8
-      const scale = targetWidth / width;
-      const x = -(window.innerWidth / 2 - paddingLeft );
-      const y = ( window.innerHeight - paddingTop - width / 2 -paddingTop )
+      let targetWidth = 40;
+      let paddingLeft = 40;
+      let paddingBottom = 30;
+      let paddingTop = 80;
+      let width = window.innerWidth * 0.8
+      let scale = targetWidth / width;
+      let x = -(window.innerWidth / 2 - paddingLeft );
+      let y = ( window.innerHeight - paddingTop - width / 2 -paddingTop )
       return { x, y, scale }
+    },
+
+    // 格式化播放时间
+    foramtTime ( interval ) {
+      // | 0 相当于 Math.floor
+      interval = interval | 0;
+      let minute = interval / 60 | 0;
+      let second = interval % 60;
+      second = second < 10 ? '0' + second : second;
+      return `${minute}:${second}`;
     }
   },
+
+  // watch 当前播放歌曲的变化以及播放状态的变化
   watch: {
-    currentSong() {
+    currentSong( nextSong, prevSong ) {
+      if ( nextSong.id === prevSong.id ) {
+        return;
+      }
       this.$nextTick(() => {
         this.$refs.audio.play()
       })
@@ -232,6 +357,10 @@ export default {
         flag ? audio.play() : audio.pause()
       })
     }
+  },
+  components: {
+    ProgressBar,
+    ProgressCircle
   }
 }
 </script>

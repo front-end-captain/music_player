@@ -2,9 +2,14 @@
   <div class="recommend">
     <scroll class="recommend-content" ref="scroll" :data="disclist">
       <div>
+
+        <!-- 轮播图 开始 -->
         <div v-if="sliders.length > 0" class="slider-wrapper">
-          <slider v-bind:swiperSliders="sliders" v-bind:loadImg="this._loadImg"></slider>
+          <slider v-bind:swiperSliders="sliders" v-bind:loadImg="_loadImg"></slider>
         </div>
+        <!-- 轮播图 结束 -->
+
+        <!-- 推荐歌单列表 开始 -->
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
@@ -19,10 +24,16 @@
             </li>
           </ul>
         </div>
+        <!-- 推荐歌单列表 结束 -->
+
       </div>
+
+      <!-- loading 开始 -->
       <div class="loading-container" v-show="!disclist.length > 0">
         <loading></loading>
       </div>
+      <!-- loading 结束 -->
+
     </scroll>
   </div>
 </template>
@@ -36,6 +47,7 @@ import Loading from 'base/loading/loading.vue';
 
 export default {
   name: "recommend",
+
   data() {
     return {
       // 轮播图数据 length = 5
@@ -50,16 +62,20 @@ export default {
       disclist: []
     };
   },
+
   components: {
     Slider,
     Scroll,
     Loading
   },
+
   created() {
     this._getRecommendData();
     this._getDiscList();
   },
+
   methods: {
+    // 获取轮播图数据 from api/recommend.js
     _getRecommendData() {
       getRecommendData().then(response => {
         if (response.code === ERR_OK) {
@@ -67,6 +83,8 @@ export default {
         }
       });
     },
+
+    // 获取推荐歌单列表 from api/recommend.js
     _getDiscList() {
       getDiscList().then(response => {
         if (response.code === ERR_OK) {
@@ -74,6 +92,7 @@ export default {
         }
       });
     },
+
     _loadImg ( event ) {
       if ( !this.checkLoad ) {
         this.checkLoad = true;
