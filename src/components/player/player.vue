@@ -48,7 +48,7 @@
           </div>
           <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
-              <div v-if="currentLyric">
+              <div v-if="currentLyric && currentLyric.lines.length > 0">
                 <p
                   class="text"
                   :class="{'current': currentLyricLineNum === index}"
@@ -57,6 +57,9 @@
                 >
                   {{ line.txt }}
                 </p>
+              </div>
+              <div v-if="currentLyric && currentLyric.lines.length === 0">
+                <p class="text no-lyric">{{ noLrc }}</p>
               </div>
             </div>
           </scroll>
@@ -195,6 +198,13 @@ export default {
 
     percent() {
       return this.currentTime / this.currentSong.duration;
+    },
+
+    // 歌曲无歌词应该显示的内容
+    noLrc() {
+      return this.currentLyric.lines.length === 0
+        ? this.currentLyric.lrc.replace( '[00:00:00]', '' )
+        : ''
     },
 
     ...mapGetters([
@@ -399,6 +409,16 @@ export default {
       this.currentSong.createLyric()
       .then( lyric => {
         this.currentLyric = new LyricParser( lyric, this.handleLyric );
+
+        // 歌曲无歌词
+        if ( this.currentLyric.lines.length === 0 ) {
+          this.$refs.lyricList.$el.style.position = 'relative';
+          this.$refs.lyricList.$el.style.top = '50%'
+        } else {
+          this.$refs.lyricList.$el.style.position = '';
+          this.$refs.lyricList.$el.style.top = ''
+        }
+
         if ( this.playing ) {
           this.currentLyric.play()
         }
@@ -446,8 +466,10 @@ export default {
       let deltaX = event.touches[0].pageX - this.touch.startX;
       let deltaY = event.touches[0].pageY - this.touch.startY;
 
-      // 竖向滑动无效（不进行切换）
+
+      // 竖向滑动无效（不进行切换）同时在执行 touchend 时直接跳出执行 不进行切换
       if ( Math.abs(deltaY) > Math.abs(deltaX) ) {
+        this.touch.isFirstTouch = true;
         return;
       }
 
@@ -641,7 +663,7 @@ export default {
             .playing-lyric
               height: 20px
               line-height: 20px
-              font-size: $font-size-medium
+              font-size: $font-size-medium-x
               color: $color-text-l
         .middle-r
           display: inline-block
@@ -657,7 +679,7 @@ export default {
             .text
               line-height: 32px
               color: $color-text-l
-              font-size: $font-size-medium
+              font-size: $font-size-medium-x
               &.current
                 color: $color-text
       .bottom

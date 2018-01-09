@@ -19,3 +19,6 @@ export const SET_PLAY_MODE = 'SET_PLAY_MODE'
 
 // 这是当前播放歌曲在播放列表中的缩影
 export const SET_CURRENTINDEX = 'SET_CURRENTINDEX'
+
+// 设置歌单列表
+export const SET_DISC = 'SET_DISC'

@@ -44,3 +44,8 @@ export const currentIndex = state => state.currentIndex;
 export const currentSong = state => {
   return state.playList[state.currentIndex] || {}
 }
+
+/**
+ * @description 返回歌单列表数据
+ */
+export const disc = state => state.disc;

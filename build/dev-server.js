@@ -33,6 +33,8 @@ app.use( function ( request, response, next ) {
 
 
 const ApiRouter = express.Router();
+
+// 获取首页推荐数据
 ApiRouter.use( '/getDiscList', ( request, response ) => {
   let url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
   axios.get( url,{
@@ -58,8 +60,10 @@ ApiRouter.use( '/getSong', ( request, response ) => {
     }
   })
 })
+
+// 获取歌曲歌词数据
 ApiRouter.use( '/getLyric', ( request, response ) => {
-  var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+  let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
 
   axios.get(url, {
     headers: {
@@ -85,7 +89,25 @@ ApiRouter.use( '/getLyric', ( request, response ) => {
   })
 })
 
+// 获取歌单列表数据
+ApiRouter.use( '/getSongList', ( request, response ) => {
+  let url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg';
+
+  axios.get( url,{
+    headers: {
+      Referer: `https://y.qq.com/n/yqq/playlist/${request.query.disstid}.html`
+    },
+    params: request.query
+  }).then( ( res ) => {
+    response.json( res.data )
+  }).catch( ( error ) => {
+    console.log( error );
+  })
+})
+
 app.use( '/api', ApiRouter );
+
+
 
 const devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,

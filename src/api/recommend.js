@@ -46,4 +46,27 @@ const getDiscList = () => {
   })
 }
 
-export { getRecommendData, getDiscList }
+/**
+ * @description 获取歌单列表详情数据
+ * @param {Number} disstid 歌单 id
+ */
+const getSongList = ( disstid ) => {
+  let url = 'api/getSongList';
+  const query = Object.assign({}, commonConfig, {
+    disstid,
+    type: 1,
+    json: 1,
+    utf8: 1,
+    onlysong: 0,
+    platform: 'yqq',
+    hostUin: 0,
+    needNewCode: 0,
+    format: 'json'
+  });
+
+  return axios.get( url, { params: query } ).then( ( res ) => {
+    return Promise.resolve( res.data )
+  })
+}
+
+export { getRecommendData, getDiscList, getSongList }

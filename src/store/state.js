@@ -8,6 +8,7 @@ import { playmode } from 'common/js/config.js';
  * sequenceList 当前顺序播放列表
  * mode 当前播放列表的播放模式
  * currentIndex 当前播放歌曲在播放列表中的索引
+ * disc 存放歌单详细数据信息 比如歌单id,歌单名称，歌单作者，歌单图片地址等
  */
 const state = {
   singer: {},
@@ -16,7 +17,8 @@ const state = {
   playList: [],
   sequenceList: [],
   mode: playmode.sequence,
-  currentIndex: -1
+  currentIndex: -1,
+  disc: {}
 }
 
 export default state;
