@@ -102,7 +102,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'selectPlay'
+      'selectPlay',
+      'randomPlay'
     ]),
 
     // 回退
@@ -117,7 +118,9 @@ export default {
 
     // 随机播放全部
     random() {
-
+      this.randomPlay({
+        list: this.songs
+      })
     },
 
     // 选择即播放

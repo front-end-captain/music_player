@@ -1,5 +1,6 @@
 import jsonp from 'common/js/jsonp.js';
-
+import { getLyric } from 'api/lyric.js'
+import { Base64 } from 'js-base64';
 
 class Song {
   constructor ( { id, mid, singer, name, album, duration, img, url } ) {
@@ -11,6 +12,24 @@ class Song {
     this.duration = duration;
     this.img = img;
     this.url = url;
+  }
+  
+  /**
+   * @description 创建歌词
+   */
+  createLyric() {
+    if ( this.lyric ) {
+      return Promise.resolve( this.lyric );
+    }
+    return new Promise( ( resolve, reject ) => {
+      getLyric( this.mid ).then( res => {
+        if ( res.retcode === 0 ) {
+          this.lyric = Base64.decode( res.lyric );
+          resolve( this.lyric );
+        }
+        reject( 'no lyric' );
+      })
+    })
   }
 }
 

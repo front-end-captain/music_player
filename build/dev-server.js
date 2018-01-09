@@ -58,6 +58,32 @@ ApiRouter.use( '/getSong', ( request, response ) => {
     }
   })
 })
+ApiRouter.use( '/getLyric', ( request, response ) => {
+  var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: request.query
+  })
+  .then( res => {
+    let ret = res.data;
+
+    if (typeof ret === 'string') {
+      var reg = /^\w+\(({[^()]+})\)$/
+      var matches = ret.match(reg)
+      if (matches) {
+        ret = JSON.parse(matches[1])
+      }
+    }
+    response.json( ret )
+  })
+  .catch( error => {
+    console.log( error )
+  })
+})
 
 app.use( '/api', ApiRouter );
 

@@ -1,5 +1,14 @@
 import { playmode } from 'common/js/config.js';
 
+/**
+ * singer 当前播放歌曲的歌手信息
+ * playing 当前播放歌曲的播放状态 false表示暂停播放
+ * fullScreen 播放器的显示状态 false 表示迷你显示
+ * playList 当前播放列表，30首歌曲；当播放模式为随机，此列表为乱序；其他播放模式下，此列表数据与 sequenceList 中数据相同
+ * sequenceList 当前顺序播放列表
+ * mode 当前播放列表的播放模式
+ * currentIndex 当前播放歌曲在播放列表中的索引
+ */
 const state = {
   singer: {},
   playing: false,
