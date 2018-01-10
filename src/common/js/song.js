@@ -13,7 +13,7 @@ class Song {
     this.img = img;
     this.url = url;
   }
-  
+
   /**
    * @description 创建歌词
    */

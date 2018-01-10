@@ -60,7 +60,7 @@ export default {
       })
     },
 
-    // 格式化歌手详情数据 剔除一些无用数据
+    // 格式化歌曲详情数据 剔除一些无用数据
     async _normalizeSonglist( list ) {
       let ret = [];
       await list.forEach( item => {
