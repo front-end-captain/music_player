@@ -49,3 +49,9 @@ export const currentSong = state => {
  * @description 返回歌单列表数据
  */
 export const disc = state => state.disc;
+
+
+/**
+ * @description 返回某一个排行榜的列表数据
+ */
+export const rankList = state => state.rankList;

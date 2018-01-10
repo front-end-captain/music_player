@@ -25,6 +25,9 @@ const mutations = {
   },
   [types.SET_DISC]( state, disc ) {
     state.disc = disc
+  },
+  [types.SET_RANKLIST]( state, ranklist ) {
+    state.rankList = ranklist;
   }
 }
 

@@ -22,3 +22,6 @@ export const SET_CURRENTINDEX = 'SET_CURRENTINDEX'
 
 // 设置歌单列表
 export const SET_DISC = 'SET_DISC'
+
+// 设置排行榜数据
+export const SET_RANKLIST = 'SET_RANKLIST'

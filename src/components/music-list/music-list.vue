@@ -33,7 +33,7 @@
       @scroll="scroll"
       >
       <div class="song-list-wrapper">
-        <song-list :songs="songs" @select="selectItem"></song-list>
+        <song-list :songs="songs" @select="selectItem" :rank="rank"></song-list>
       </div>
       <div class="loading-container" v-show="!songs.length > 0">
         <loading></loading>
@@ -67,6 +67,10 @@ export default {
     title: {
       default: String,
       default: ''
+    },
+    rank: {
+      type: Boolean,
+      default: false
     }
   },
 
