@@ -31,7 +31,7 @@
       :probeType="probeType"
       :listenScroll="isListenScroll"
       @scroll="scroll"
-      >
+    >
       <div class="song-list-wrapper">
         <song-list :songs="songs" @select="selectItem" :rank="rank"></song-list>
       </div>

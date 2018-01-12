@@ -23,7 +23,11 @@ export default {
 
   data() {
     return {
+
+      // 某一个排行榜下的歌曲列表
       songs: [],
+
+      // 是否对排名前三的歌曲进行高亮显示
       isRank: true
     }
   },
@@ -42,42 +46,37 @@ export default {
   },
 
   methods: {
-    _getSongList() {
+
+    // 获取某一个排行榜下的歌曲列表
+    async _getSongList() {
       if ( !this.rankList.id ) {
         this.$router.push({
           path: '/rank'
         });
         return;
       }
-      getRankList( this.rankList.id )
-      .then( res => {
-        console.log( res );
-        if ( res.code === 0 ) {
-          this._normalizeSonglist( res.songlist ).then( ret => {
-            this.songs = ret;
-          });
-        }
-      })
+      let res = await getRankList( this.rankList.id );
+
+      if ( res.code === 0 ) {
+        this.songs = await this._normalizeSonglist( res.songlist );
+      }
     },
 
     // 格式化歌曲详情数据 剔除一些无用数据
     async _normalizeSonglist( list ) {
       let ret = [];
-      await list.forEach( item => {
-        let { data } = item;
 
+      let promises = list.map( item => {
+        let { data } = item;
         if ( data.songid && data.albummid ) {
-          createSong( data ).then( newSong => {
-            ret.push( newSong )
-          })
+          return createSong( data );
         }
       });
+
+      ret = await Promise.all( promises );
       return ret;
     }
-
   }
-
-
 }
 </script>
 

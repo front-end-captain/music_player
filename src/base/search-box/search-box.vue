@@ -7,6 +7,9 @@
 </template>
 
 <script>
+
+import { debounce } from 'common/js/utils.js'
+
 export default {
   name: 'search-box',
 
@@ -33,12 +36,12 @@ export default {
     }
   },
 
-  watch: {
-    query( newQuery ) {
+  //
+  created() {
+    this.$watch( 'query', debounce( ( newQuery ) => {
       this.$emit( 'query', newQuery );
-    }
+    }, 200));
   }
-
 
 }
 </script>
@@ -64,12 +67,12 @@ export default {
       line-height: 36px
       background: $color-highlight-background
       color: $color-text
-      font-size: $font-size-medium
+      font-size: $font-size-medium-x
       text-indent: $font-size-medium;
       &::placeholder
         color: $color-text-d
     .icon-dismiss
-      font-size: 16px
+      font-size: 26px
       color: $color-background
 </style>
 

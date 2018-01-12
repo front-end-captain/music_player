@@ -1,7 +1,7 @@
 <template>
   <div class="m-header">
     <div class="icon"></div>
-    <div class="text">Viking Music</div>
+    <div class="text">Music Player</div>
   </div>
 </template>
 
@@ -29,6 +29,7 @@ export default {
       height: 32px
       margin-right: 9px
       bg-image('logo')
+      border-radius 100%
       background-size: 30px 32px
     .text
       display: inline-block

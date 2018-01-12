@@ -278,7 +278,7 @@ export default {
       background: $color-background-d
       font-family: Helvetica
       .item
-        padding: 5px
+        padding: 3px
         line-height: 1
         color: $color-text-l
         font-size: $font-size-small

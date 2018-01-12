@@ -14,3 +14,21 @@ export function shuffle( array ) {
   }
   return array;
 }
+
+/**
+ * @description 防抖
+ * @param {Function} func 延时执行函数
+ * @param {Number} delay 延时
+ */
+export function debounce( func, delay ) {
+  let timer = null;
+
+  return function ( ...args ) {
+    if ( timer ) {
+      window.clearTimeout( timer );
+    }
+    timer = window.setTimeout( () => {
+      func.apply( this, args );
+    }, delay )
+  }
+}

@@ -7,8 +7,9 @@
     </div>
     <!-- 搜索框 结束 -->
 
-    <div class="shortcut-wrapper" v-show="!query">
-      <scroll class="shortcut">
+    <div class="shortcut-wrapper" v-show="!query" ref="shortcutWrapper">
+      <!-- Scroll 组件只能包裹一个子元素 -->
+      <scroll class="shortcut" :data="shortcut" ref="shortcut">
         <div>
 
           <!-- 热门搜索标签列表 开始 -->
@@ -23,6 +24,15 @@
           <!-- 热门搜索标签列表 结束 -->
 
           <!-- 搜索历史记录列表 开始 -->
+          <div class="search-history" v-show="searchHistory.length">
+            <h1 class="title">
+              <span class="text">搜索历史</span>
+              <span @click="showConfirm" class="clear">
+                <i class="icon-clear"></i>
+              </span>
+            </h1>
+            <search-list @delete="deleteSearchEntry" @select="addQuery" :searches="searchHistory"></search-list>
+          </div>
           <!-- 搜索历史记录列表 结束 -->
 
         </div>
@@ -30,50 +40,87 @@
     </div>
 
     <!-- 搜索结果列表 开始 -->
-    <div class="search-result" v-show="query">
-      <suggest :query="query"></suggest>
+    <div class="search-result" v-show="query" ref="searchResultWrapper">
+      <suggest :query="query" @listScoll="listScroll" @select="saveSearch" ref="suggest"></suggest>
     </div>
     <!-- 搜索结果列表 结束 -->
+
+    <confirm ref="confirm" text="是否清空搜索历史记录" confirmBtnText="清空" @confirm="clearSearchHistory"></confirm>
   </div>
 </template>
 
 <script>
 
-import SearchBox from 'base/search-box/search-box'
+import SearchBox from 'base/search-box/search-box.vue'
 import Scroll from 'base/scroll/scroll.vue'
 import Suggest from 'components/suggest/suggest.vue'
-import { getHotKey } from 'api/search.js';
+import SearchList from 'base/search-list/search-list.vue'
+import Confirm from 'base/confirm/confirm.vue'
+import { mapActions, mapGetters } from 'vuex'
+import { getHotKey } from 'api/search.js'
+import { playListMixin } from 'common/js/mixin'
 
 
 export default {
   name: 'scarch',
 
+  mixins: [playListMixin],
+
   data() {
     return {
-      hotKey: [],          // 热门搜索关键字列表
-      query: ''            // 用户搜索关键字
+
+      // 热门搜索关键字列表
+      hotKey: [],
+
+      // 用户搜索关键字
+      query: ''
     }
   },
 
   components: {
     SearchBox,
     Scroll,
-    Suggest
+    Suggest,
+    SearchList,
+    Confirm
   },
 
   created() {
     this._getHotKey();
   },
 
+  computed: {
+    ...mapGetters([
+      'searchHistory'
+    ]),
+    shortcut() {
+      return this.hotKey.concat( this.searchHistory );
+    }
+  },
+
   methods: {
+    ...mapActions({
+      saveSearchHistory: 'saveSearchHistory',
+      deleteSearchHistory: 'deleteSearchHistory',
+      clearSearchHistory: 'clearSearchHistory'
+    }),
+
+    handlePlayList( playList ) {
+      let bottom = playList.length > 0 ? '60px' : 0;
+
+      this.$refs.shortcutWrapper.style.bottom = bottom;
+      this.$refs.shortcut.refresh();
+
+      this.$refs.searchResultWrapper.style.bottom = bottom;
+      this.$refs.suggest.refresh();
+    },
 
     // 获取热门搜索关键词
-    _getHotKey() {
-      getHotKey().then( res => {
-        if ( res.code === 0 ) {
-          this.hotKey = res.data.hotkey.splice( 0 ,10 );
-        }
-      })
+    async _getHotKey() {
+      let res = await getHotKey();
+      if ( res.code === 0 ) {
+        this.hotKey = res.data.hotkey.splice( 0 ,10 );
+      }
     },
 
     addQuery( newQuery ) {
@@ -82,6 +129,32 @@ export default {
 
     onQueryChange( newQuery ) {
       this.query = newQuery;
+    },
+
+    listScroll() {
+      this.$refs.searchBox.blur();
+    },
+
+    showConfirm() {
+      this.$refs.confirm.show();
+    },
+
+    deleteSearchEntry( item ) {
+      this.deleteSearchHistory( item );
+    },
+
+    saveSearch() {
+      this.saveSearchHistory( this.query );
+    }
+  },
+
+  watch: {
+    query( newQuery ) {
+      if ( !newQuery ) {
+        setTimeout( () => {
+          this.$refs.shortcut.refresh();
+        }, 20)
+      }
     }
   }
 }
@@ -128,6 +201,7 @@ export default {
             height: 40px
             font-size: $font-size-medium
             color: $color-text-l
+            border-bottom: 1px solid #5a5a5a
             .text
               flex: 1
             .clear

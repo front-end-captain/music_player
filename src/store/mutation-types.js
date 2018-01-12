@@ -25,3 +25,6 @@ export const SET_DISC = 'SET_DISC'
 
 // 设置排行榜数据
 export const SET_RANKLIST = 'SET_RANKLIST'
+
+// 设置搜索历史记录
+export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'

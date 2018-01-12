@@ -5,7 +5,7 @@ import axios from 'axios'
  * @description 获取当前播放歌曲的歌词
  * @param {Number} mid
  */
-export function getLyric( mid ) {
+async function getLyric( mid ) {
 
   const url = '/api/getLyric'
 
@@ -19,9 +19,8 @@ export function getLyric( mid ) {
     format: 'json'
   })
 
-  return axios.get( url, {
-    params: query
-  }).then( res => {
-    return Promise.resolve(res.data)
-  })
+  let res = await axios.get( url, { params: query } );
+  return res.data;
 }
+
+export { getLyric }
