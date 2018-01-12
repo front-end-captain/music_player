@@ -260,11 +260,11 @@ export default {
         width: 30px
         [class^="icon-"]
           font-size: 14px
-          color: $color-text-d
+          color: $color-theme-black
       .name
         flex: 1
         font-size: $font-size-medium
-        color: $color-text-d
+        color: $color-theme-black
         overflow: hidden
         .text
           no-wrap()

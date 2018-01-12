@@ -106,15 +106,17 @@ export default {
           padding: 0 20px
           height: 100px
           overflow: hidden
-          background: $color-highlight-background
-          color: $color-text-d
-          font-size: $font-size-small
+          background: $color-background-white
+          color: $color-theme-black
+
           .top-title
-            color: $color-text
-            line-height: 20px
+            font-size $font-size-medium
+            color: $color-theme-black
+            line-height: 26px
           .song
             no-wrap()
             line-height: 20px
+            font-size: $font-size-small
       .loading-container
         position: absolute
         width: 100%

@@ -28,7 +28,8 @@ export default {
     display flex
     height 44px
     line-height 44px
-    font-size $font-size-medium
+    font-size $font-size-medium-x
+    background-color $color-background-aqua
     .tab-item
       flex 1
       text-align center
@@ -37,7 +38,7 @@ export default {
         color $color-text-l
       &.router-link-active
         .tab-link
-          color $color-theme
+          color $color-theme-white
           border-bottom 2px solid $color-theme
 </style>
 

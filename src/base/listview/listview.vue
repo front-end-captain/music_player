@@ -243,7 +243,6 @@ export default {
     width: 100%
     height: 100%
     overflow: hidden
-    background: $color-background
     .list-group
       padding-bottom: 30px
       .list-group-title
@@ -251,8 +250,8 @@ export default {
         line-height: 30px
         padding-left: 20px
         font-size: $font-size-small
-        color: $color-text-l
-        background: $color-highlight-background
+        color:$color-text-gray
+        background: $color-background-white
       .list-group-item
         display: flex
         align-items: center
@@ -263,7 +262,7 @@ export default {
           border-radius: 50%
         .name
           margin-left: 20px
-          color: $color-text-l
+          color: $color-theme-black
           font-size: $font-size-medium
     .list-shortcut
       position: absolute
@@ -283,19 +282,19 @@ export default {
         color: $color-text-l
         font-size: $font-size-small
         &.current
-          color: $color-theme
+          color: $color-background-aqua
     .list-fixed
       position: absolute
       top: 0
       left: 0
       width: 100%
+      background-color $color-background-white
       .fixed-title
         height: 30px
         line-height: 30px
         padding-left: 20px
         font-size: $font-size-small
-        color: $color-text-l
-        background: $color-highlight-background
+        color: $color-theme-black
     .loading-container
       position: absolute
       width: 100%

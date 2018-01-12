@@ -257,13 +257,13 @@ export default {
     .bg-layer
       position: relative
       height: 100%
-      background: $color-background
+      background: $color-background-light-black
     .list
       position: fixed
       top: 0
       bottom: 0
       width: 100%
-      background: $color-background
+      background: $color-background-light-black
       .song-list-wrapper
         padding: 20px 30px
       .loading-container

@@ -145,7 +145,7 @@ export default {
         line-height: 65px;
         text-align: center;
         font-size: $font-size-medium;
-        color: $color-theme;
+        color: $color-theme-black;
       }
 
       .item {
@@ -170,12 +170,13 @@ export default {
           font-size: $font-size-medium;
 
           .name {
+            font-size $font-size-medium-x
             margin-bottom: 10px;
-            color: $color-text;
+            color: $color-theme-black;
           }
 
           .desc {
-            color: $color-text-d;
+            color: $color-text-gray
           }
         }
       }

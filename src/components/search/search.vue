@@ -181,17 +181,18 @@ export default {
           .title
             margin-bottom: 20px
             font-size: $font-size-medium
-            color: $color-text-l
+            color: $color-theme-black
           .item
             display: inline-block
-            padding: 5px 10px
+            padding: 10px 12px
             margin: 0 20px 10px 0
-            border-radius: 6px
-            background: $color-highlight-background
+            border-radius: 22px
             font-size: $font-size-medium
-            color: $color-text-d
+            color: $color-theme-black
+            border 1px solid #cccccc
             .hot
-              color: red
+              font-size: $font-size-medium-x
+              color: $color-background-aqua
         .search-history
           position: relative
           margin: 0 20px
@@ -200,7 +201,7 @@ export default {
             align-items: center
             height: 40px
             font-size: $font-size-medium
-            color: $color-text-l
+            color: $color-text-gray
             border-bottom: 1px solid #5a5a5a
             .text
               flex: 1
@@ -208,7 +209,7 @@ export default {
               extend-click()
               .icon-clear
                 font-size: $font-size-medium
-                color: $color-text-d
+                color: $color-theme-black
     .search-result
       position: fixed
       width: 100%

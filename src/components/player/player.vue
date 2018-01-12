@@ -580,7 +580,7 @@ export default {
       top: 0
       bottom: 0
       z-index: 150
-      background: $color-background
+      background: $color-background-aqua
       .background
         position: absolute
         left: 0
@@ -761,7 +761,7 @@ export default {
       z-index: 180
       width: 100%
       height: 60px
-      background: $color-highlight-background
+      background: $color-background-aqua
       &.mini-enter-active, &.mini-leave-active
         transition: all 0.4s
       &.mini-enter, &.mini-leave-to
@@ -798,7 +798,7 @@ export default {
         padding: 0 10px
         .icon-play-mini, .icon-pause-mini, .icon-playlist
           font-size: 30px
-          color: $color-theme-d
+          color: $color-theme-white
         .icon-mini
           font-size: 32px
           position: absolute

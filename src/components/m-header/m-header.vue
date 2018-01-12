@@ -19,8 +19,9 @@ export default {
     position: relative
     height: 44px
     text-align: center
-    color: $color-theme
+    color: $color-theme-white
     font-size: 0
+    background-color: $color-background-aqua
     .icon
       display: inline-block
       vertical-align: top
@@ -45,6 +46,5 @@ export default {
         padding: 12px
         font-size: 20px
         color: $color-theme
-
 </style>
 

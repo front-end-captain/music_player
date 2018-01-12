@@ -56,7 +56,7 @@ export default {
     width: 100%
     padding: 0 6px
     height: 46px
-    background: $color-highlight-background
+    background: $color-background-aqua
     border-radius: 6px
     .icon-search
       font-size: 24px
@@ -65,10 +65,12 @@ export default {
       flex: 1
       margin: 0 5px
       line-height: 36px
-      background: $color-highlight-background
+      background: $color-background-aqua
       color: $color-text
       font-size: $font-size-medium-x
-      text-indent: $font-size-medium;
+      text-indent: $font-size-medium
+      border none
+      outline none
       &::placeholder
         color: $color-text-d
     .icon-dismiss

@@ -43,6 +43,7 @@ async function getSongUrl ( songmid ) {
   let url = 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg'
   let songUrl = '';
   let res = null;
+  let mock_guid = 6639759492;
 
   let query = {
     g_tk: 1928093487,
@@ -57,7 +58,7 @@ async function getSongUrl ( songmid ) {
     uin: 0,
     songmid: songmid,
     filename: `C400${songmid}.m4a`,
-    guid: 1130857695,
+    guid: mock_guid,
   };
 
   /**
@@ -80,7 +81,7 @@ async function getSongUrl ( songmid ) {
     return songUrl = ''
   }
   if ( res.code === 0 ) {
-    songUrl = `http://dl.stream.qqmusic.qq.com/C400${songmid}.m4a?vkey=${res.data.items[0].vkey}&guid=7059694423&uin=0&fromtag=66`;
+    songUrl = `http://dl.stream.qqmusic.qq.com/C400${songmid}.m4a?vkey=${res.data.items[0].vkey}&guid=${mock_guid}&uin=0&fromtag=66`;
     return songUrl;
   }
   return songUrl = '';
@@ -100,9 +101,9 @@ async function createSong ( musicData ) {
     singer: filterSinger( musicData.singer ),
     name: musicData.songname,
     album: musicData.albumname,
-    duration: 282.842268,
+    duration: musicData.interval,
     img: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: 'http://localhost:8000/api/getSong',
+    url: songUrl,
     invalidUrl: songUrl
   })
 }
