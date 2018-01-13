@@ -22,7 +22,7 @@ const getRecommendData = () => {
 /**
  * @description 获取歌单列表
  */
-const getDiscList = () => {
+const getDiscList = async () => {
   const url = 'api/getDiscList';
 
   const query = Object.assign( {}, commonConfig, {
@@ -41,16 +41,15 @@ const getDiscList = () => {
     format: 'json'
   });
 
-  return axios.get( url, { params: query } ).then( ( res ) => {
-    return Promise.resolve( res.data )
-  })
+  let res = await axios.get( url, { params: query } );
+  return res.data;
 }
 
 /**
  * @description 获取歌单列表详情数据
  * @param {Number} disstid 歌单 id
  */
-const getSongList = ( disstid ) => {
+const getSongList = async ( disstid ) => {
   let url = 'api/getSongList';
   const query = Object.assign({}, commonConfig, {
     disstid,
@@ -64,9 +63,8 @@ const getSongList = ( disstid ) => {
     format: 'json'
   });
 
-  return axios.get( url, { params: query } ).then( ( res ) => {
-    return Promise.resolve( res.data )
-  })
+  let res = await axios.get( url, { params: query } );
+  return res.data;
 }
 
 export { getRecommendData, getDiscList, getSongList }

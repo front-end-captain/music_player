@@ -3,6 +3,9 @@ import storage from 'good-storage'
 const SEARCH_KEY = '__search__';
 const SEARCH_MAX_LEHGTH = 15;
 
+const PLAY_KEY = '__play__'
+const PLAY_MAX_LENGTH = 200;
+
 
 /**
  *@description 向数组中插入元素
@@ -14,11 +17,10 @@ const SEARCH_MAX_LEHGTH = 15;
 function insertItemToArray( item, array, compare, maxLength ) {
 
   // 检查待插入的项是否已经在数组中存在
-  let index = array.findIndex( compare )
+  let index = array.findIndex( compare );
 
-  console.log( index );
   if ( index === 0 ) {
-    return;
+    return array;
   }
 
   if ( index > 0 ) {
@@ -97,4 +99,24 @@ export const deleteSearchEntry = ( query ) => {
 export const clearSearchEntries = () => {
   storage.remove( SEARCH_KEY );
   return [];
+}
+
+
+
+export const savePlayHistoryEntry = ( entry ) => {
+  let histories = storage.get( PLAY_KEY, [] );
+
+  histories = histories || [];
+
+  let newHistories = insertItemToArray( entry, histories, ( item ) => {
+    return item.id === entry.id;
+  })
+
+  storage.set( PLAY_KEY, newHistories );
+  return newHistories;
+}
+
+
+export const loadPlayHistory = () => {
+  return storage.get( PLAY_KEY, [] );
 }

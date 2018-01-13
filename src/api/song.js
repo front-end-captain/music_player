@@ -1,5 +1,5 @@
 import jsonp from 'common/js/jsonp.js';
-import { getLyric } from 'api/lyric.js'
+import { getLyric } from './lyric.js'
 import { Base64 } from 'js-base64';
 
 class Song {
@@ -123,4 +123,4 @@ function filterSinger ( singer ) {
   return res.join( '/' )
 }
 
-export { createSong }
+export { createSong, Song }

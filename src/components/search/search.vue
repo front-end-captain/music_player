@@ -9,7 +9,7 @@
 
     <div class="shortcut-wrapper" v-show="!query" ref="shortcutWrapper">
       <!-- Scroll 组件只能包裹一个子元素 -->
-      <scroll class="shortcut" :data="shortcut" ref="shortcut">
+      <scroll class="shortcut" :data="shortcut" ref="shortcut" :refreshDelay="refreshDelay">
         <div>
 
           <!-- 热门搜索标签列表 开始 -->
@@ -56,24 +56,21 @@ import Scroll from 'base/scroll/scroll.vue'
 import Suggest from 'components/suggest/suggest.vue'
 import SearchList from 'base/search-list/search-list.vue'
 import Confirm from 'base/confirm/confirm.vue'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 import { getHotKey } from 'api/search.js'
-import { playListMixin } from 'common/js/mixin'
+import { playListMixin, searchMixin } from 'common/js/mixin'
 
 
 export default {
   name: 'scarch',
 
-  mixins: [playListMixin],
+  mixins: [playListMixin, searchMixin],
 
   data() {
     return {
 
       // 热门搜索关键字列表
-      hotKey: [],
-
-      // 用户搜索关键字
-      query: ''
+      hotKey: []
     }
   },
 
@@ -90,9 +87,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'searchHistory'
-    ]),
+
     shortcut() {
       return this.hotKey.concat( this.searchHistory );
     }
@@ -100,12 +95,14 @@ export default {
 
   methods: {
     ...mapActions({
-      saveSearchHistory: 'saveSearchHistory',
-      deleteSearchHistory: 'deleteSearchHistory',
       clearSearchHistory: 'clearSearchHistory'
     }),
 
     handlePlayList( playList ) {
+      if ( !playList.length ) {
+        return;
+      }
+
       let bottom = playList.length > 0 ? '60px' : 0;
 
       this.$refs.shortcutWrapper.style.bottom = bottom;
@@ -123,18 +120,6 @@ export default {
       }
     },
 
-    addQuery( newQuery ) {
-      this.$refs.searchBox.setQuery( newQuery );
-    },
-
-    onQueryChange( newQuery ) {
-      this.query = newQuery;
-    },
-
-    listScroll() {
-      this.$refs.searchBox.blur();
-    },
-
     showConfirm() {
       this.$refs.confirm.show();
     },
@@ -143,9 +128,7 @@ export default {
       this.deleteSearchHistory( item );
     },
 
-    saveSearch() {
-      this.saveSearchHistory( this.query );
-    }
+
   },
 
   watch: {

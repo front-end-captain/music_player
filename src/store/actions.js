@@ -1,7 +1,12 @@
 import * as types from './mutation-types.js'
 import { playmode } from 'common/js/config.js'
 import { shuffle } from 'common/js/utils.js'
-import { saveSearchEntry, deleteSearchEntry, clearSearchEntries } from 'common/js/cache.js'
+import {
+  saveSearchEntry,
+  deleteSearchEntry,
+  clearSearchEntries,
+  savePlayHistoryEntry
+} from 'common/js/cache.js'
 
 
 /**
@@ -112,4 +117,51 @@ export const deleteSearchHistory = ( {commit}, query ) => {
  */
 export const clearSearchHistory = ( { commit } ) => {
   commit( types.SET_SEARCH_HISTORY, clearSearchEntries() );
+}
+
+
+/**
+ * @description 删除播放列表中的某一首歌
+ */
+export const deleteSong = ( { commit, state }, song ) => {
+
+  // 应该创建一个新的数组来保存播放列表 而不是简单的引用赋值（这样 vuex 会报错）
+  let playlist = Array.from( state.playList )
+  let sequencelist = Array.from( state.sequenceList );
+  let currentIndex = state.currentIndex;
+
+  let playindex = playlist.findIndex( item => item.id === song.id );
+  playlist.splice( playindex, 1 );
+  let squenceIndex = sequencelist.findIndex( item => item.id === song.id );
+  sequencelist.splice( squenceIndex, 1 );
+
+  if ( currentIndex > playindex || currentIndex === playlist.length ) {
+    currentIndex --;
+  }
+
+  commit( types.SET_PLAYLIST, playlist );
+  commit( types.SET_SEQUENCELIST, sequencelist );
+  commit( types.SET_CURRENTINDEX, currentIndex );
+
+  let playingState = playlist.length === 0;
+  commit( types.SET_PLAYING_STATE, playingState );
+  commit( types.SET_FULLSCREEN, true );
+}
+
+
+/**
+ * @description 清空播放列表
+ */
+export const clearPlayList = ( { commit } ) => {
+  commit( types.SET_PLAYLIST, [] );
+  commit( types.SET_SEQUENCELIST, [] );
+  commit( types.SET_CURRENTINDEX, -1 );
+  commit( types.SET_PLAYING_STATE, false );
+  commit( types.SET_FULLSCREEN, false );
+}
+
+
+
+export const savePlayHistory = ({ commit, state }, song ) => {
+  commit( types.SET_PLAYHISTORY, savePlayHistoryEntry( song ) );
 }

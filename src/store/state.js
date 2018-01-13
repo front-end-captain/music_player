@@ -1,5 +1,5 @@
 import { playmode } from 'common/js/config.js';
-import { loadSearchHistory } from 'common/js/cache.js'
+import { loadSearchHistory, loadPlayHistory } from 'common/js/cache.js'
 
 /**
  * singer 当前播放歌曲的歌手信息
@@ -12,6 +12,7 @@ import { loadSearchHistory } from 'common/js/cache.js'
  * disc 存放歌单详细数据信息 比如歌单id,歌单名称，歌单作者，歌单图片地址等
  * rankList 存放某一个排行榜列表数据
  * searchHistory 存放用户搜索历史记录 初始值从 loaclStorage 中读取
+ * playHistory 用户播放历史记录
  */
 const state = {
   singer: {},
@@ -23,7 +24,8 @@ const state = {
   currentIndex: -1,
   disc: {},
   rankList: [],
-  searchHistory: loadSearchHistory()
+  searchHistory: loadSearchHistory(),
+  playHistory: loadPlayHistory()
 }
 
 export default state;

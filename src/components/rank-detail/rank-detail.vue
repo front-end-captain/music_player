@@ -8,7 +8,7 @@
 import { mapGetters } from 'vuex'
 import MusicList from 'components/music-list/music-list.vue'
 import { getRankList } from 'api/rank.js'
-import { createSong } from 'common/js/song.js'
+import { createSong } from 'api/song.js'
 
 export default {
   name: 'rank-detail',

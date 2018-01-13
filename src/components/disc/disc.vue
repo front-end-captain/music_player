@@ -14,7 +14,7 @@
 import MusicList from 'components/music-list/music-list.vue'
 import { mapGetters } from 'vuex'
 import { getSongList } from 'api/recommend.js'
-import { createSong } from 'common/js/song.js'
+import { createSong } from 'api/song.js'
 
 export default {
   name: 'discList',

@@ -49,11 +49,14 @@ import Scroll from 'base/scroll/scroll.vue'
 import SongList from 'base/song-list/song-list.vue'
 import Loading from 'base/loading/loading.vue'
 import { mapActions } from 'vuex'
+import { playListMixin } from 'common/js/mixin.js'
 
 const TITLE_HEIGHT = 40;
 
 export default {
   name: 'music-list',
+
+  mixins: [playListMixin],
 
   props: {
     bgImg: {
@@ -138,6 +141,16 @@ export default {
         list: this.songs,
         index: index
       })
+    },
+
+    handlePlayList( playList ) {
+      if ( !playList.length ) {
+        return;
+      }
+
+      let bottom = playList.length > 0 ? '60px' : 0;
+      this.$refs.list.$el.style.bottom = bottom;
+      this.$refs.list.refresh();
     }
   },
 
@@ -194,7 +207,7 @@ export default {
     left: 0
     bottom: 0
     right: 0
-    background: $color-background
+    background: $color-background-light-black
     .back
       position absolute
       top: 0

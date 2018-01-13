@@ -17,12 +17,17 @@ export default {
   data: function() {
     return {
       swiperOption: {
-        autoplay: 3500,
+        preventClicks: true,
+        autoplay: {
+          delay: 2500,
+          disableOnInteraction: false
+        },
         setWrapperSize: true,
-        pagination: { el: '.swiper-pagination' },
+        pagination: { el: '.swiper-pagination', clickable: false },
         observeParents: true,
         loop: true,
-        autoplayDisableOnInteraction: false
+        autoplayDisableOnInteraction: false,
+        followFinger: true
       }
     };
   },

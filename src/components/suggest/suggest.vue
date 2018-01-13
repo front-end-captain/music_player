@@ -29,7 +29,7 @@
 import Scroll from 'base/scroll/scroll.vue'
 import { mapMutations, mapActions } from 'vuex';
 import { getSearchResult } from 'api/search.js';
-import { createSong } from 'common/js/song.js'
+import { createSong } from 'api/song.js'
 import Singer from 'common/js/singer.js'
 import Loading from 'base/loading/loading.vue'
 import NoResult from 'base/no-result/no-result.vue'

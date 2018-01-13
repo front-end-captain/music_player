@@ -48,18 +48,6 @@ ApiRouter.use( '/getDiscList', ( request, response ) => {
     console.log( error );
   })
 })
-ApiRouter.use( '/getSong', ( request, response ) => {
-  response.sendFile( path.join( __dirname, 'timian.m4a'), {
-    headers: {
-      'Content-Type': 'audio/mp4'
-    }
-  }, ( err ) => {
-    if ( err ) {
-      console.log( err );
-      response.status( err.status ).end();
-    }
-  })
-})
 
 // 获取歌曲歌词数据
 ApiRouter.use( '/getLyric', ( request, response ) => {

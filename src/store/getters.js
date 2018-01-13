@@ -69,3 +69,7 @@ export const rankList = state => state.rankList;
  * @description 返回用户搜索历史记录
  */
 export const searchHistory = state => state.searchHistory;
+
+
+
+export const playHistory = state => state.playHistory;

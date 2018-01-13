@@ -28,3 +28,5 @@ export const SET_RANKLIST = 'SET_RANKLIST'
 
 // 设置搜索历史记录
 export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
+
+export const SET_PLAYHISTORY = 'SET_PLAYHISTORY'

@@ -1,5 +1,5 @@
 <template>
-  <transition name="confirm-fade">
+  <transition name="confirm-fade" @click.stop>
     <div class="confirm" v-show="showFlag" @click.stop>
       <div class="confirm-wrapper">
         <div class="confirm-content">
@@ -14,7 +14,7 @@
   </transition>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 export default {
   name: 'confirm',
 
@@ -61,7 +61,7 @@ export default {
 }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus">
   @import "~common/stylus/variable"
 
   .confirm
@@ -85,7 +85,7 @@ export default {
       .confirm-content
         width: 270px
         border-radius: 13px
-        background: $color-highlight-background
+        background: #747272
         .text
           padding: 19px 15px
           line-height: 22px

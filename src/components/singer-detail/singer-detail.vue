@@ -14,7 +14,7 @@ import MusicList from 'components/music-list/music-list.vue'
 import { mapGetters } from 'vuex'
 import { getSingerDetail } from 'api/singer.js'
 import { ERR_OK } from 'api/config.js'
-import { createSong } from 'common/js/song.js'
+import { createSong } from 'api/song.js'
 
 
 export default {

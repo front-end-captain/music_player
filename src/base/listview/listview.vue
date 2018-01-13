@@ -30,7 +30,8 @@
     <div class="list-shortcut"
       @touchstart.stop.prevent="onShortcutTouchStart"
       @touchmove.stop.prevent="onShortcutTouchMove"
-      @touchend.stop.prevent>
+      @touchend.stop.prevent
+    >
       <ul>
         <li
           class="item"

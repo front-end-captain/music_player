@@ -121,7 +121,7 @@
             <i :class="miniIcon" class="icon-mini" @click.stop="togglePlayState"></i>
           </progress-circle>
         </div>
-        <div class="control">
+        <div class="control" @click.stop="showPlayList">
           <i class="icon-playlist"></i>
         </div>
       </div>
@@ -138,25 +138,31 @@
       @ended="end"
     >
     </audio>
+
+    <play-list ref="playList"></play-list>
   </div>
 </template>
 
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 // https://github.com/HenrikJoreteg/create-keyframe-animation
 import animations from 'create-keyframe-animation'
 
-import ProgressBar from 'base/progress-bar/progress-bar.vue'
-import ProgressCircle  from 'base/progress-circle/progress-circle.vue'
 import { playmode } from 'common/js/config.js'
+import { playerMixin } from 'common/js/mixin.js'
 import { shuffle } from 'common/js/utils.js'
 import LyricParser from 'lyric-parser'
 import Scroll from 'base/scroll/scroll.vue'
+import ProgressBar from 'base/progress-bar/progress-bar.vue'
+import ProgressCircle  from 'base/progress-circle/progress-circle.vue'
+import PlayList from 'components/playlist/playlist.vue'
 
 export default {
   name: 'player',
+
+  mixins: [playerMixin],
 
   data() {
     return {
@@ -177,19 +183,11 @@ export default {
 
   computed: {
     playIcon() {
-      return this.playing ? 'icon-play' : 'icon-pause'
+      return this.playing ? 'icon-pause' : 'icon-play'
     },
 
     miniIcon() {
       return this.playing ? 'icon-play-mini' : 'icon-pause-mini'
-    },
-
-    iconMode () {
-      return this.mode === playmode.sequence
-        ? 'icon-sequence'
-        : this.mode === playmode.loop
-          ? 'icon-loop'
-          : 'icon-random';
     },
 
     cdClassName() {
@@ -205,32 +203,23 @@ export default {
       return this.currentLyric.lines.length === 0
         ? this.currentLyric.lrc.replace( '[00:00:00]', '' )
         : ''
-    },
-
-    ...mapGetters([
-      'fullScreen',
-      'playList',
-      'currentSong',
-      'playing',
-      'currentIndex',
-      'mode',
-      'sequenceList'
-    ])
+    }
   },
 
   methods: {
      ...mapMutations({
-      shiftFullScreen: 'SET_FULLSCREEN',
-      setPlayState: 'SET_PLAYING_STATE',
-      setCurrentIndex: 'SET_CURRENTINDEX',
-      setPlayMode: 'SET_PLAY_MODE',
-      setPlayList: 'SET_PLAYLIST'
+      shiftFullScreen: 'SET_FULLSCREEN'
+    }),
+
+    ...mapActions({
+      savePlayHistory: 'savePlayHistory'
     }),
 
     // 该函数执行表示歌曲资源已经准备好 从而可以进行切歌操作
+    // 将当前播放歌曲放入播放历史记录
     ready() {
       this.songReady = true;
-
+      this.savePlayHistory( this.currentSong );
     },
     // 关闭全屏播放
     close() {
@@ -299,20 +288,6 @@ export default {
       }
     },
 
-    // 改变播放模式 随机 / 循环 / 顺序
-    changeMode() {
-      let currentMode = (this.mode + 1) % 3;
-      this.setPlayMode( currentMode );
-      let list = null;
-      if ( this.playmode === playmode.random ) {
-        list = shuffle( this.sequenceList );
-      } else {
-        list = this.sequenceList;
-      }
-
-      this._resetCurrentIndex( list )
-      this.setPlayList( list );
-    },
 
     end( event ) {
       if ( this.mode === playmode.loop ) {
@@ -326,13 +301,6 @@ export default {
       this.$refs.audio.currentTime = 0;
       this.$refs.audio.play();
       this.setPlayState( true );
-    },
-
-    _resetCurrentIndex( list ) {
-      let index = list.findIndex( ( item ) => {
-        return item.id === this.currentSong.id;
-      });
-      this.setCurrentIndex( index );
     },
 
     // 入场动画
@@ -405,9 +373,9 @@ export default {
     },
 
     // 创建歌曲歌词
-    getLyric() {
-      this.currentSong.createLyric()
-      .then( lyric => {
+    async getLyric() {
+      try {
+        let lyric = await this.currentSong.createLyric()
         this.currentLyric = new LyricParser( lyric, this.handleLyric );
 
         // 歌曲无歌词
@@ -422,12 +390,11 @@ export default {
         if ( this.playing ) {
           this.currentLyric.play()
         }
-      })
-      .catch( () => {
+      } catch( e ) {
         this.currentLyric = null;
         this.playingLyric = '';
         this.currentLyricLineNum = 0;
-      })
+      }
     },
 
     // 歌曲歌词实时滚动处理
@@ -532,21 +499,32 @@ export default {
       this.$refs.middleLeft.style.opacity = opacity;
       this.$refs.middleLeft.style.transitionDuration = `${time}ms`;
       this.touch.init = false;
+    },
+
+    // 显示播放列表
+    showPlayList() {
+      this.$refs.playList.show();
     }
   },
 
   // watch 当前播放歌曲的变化以及播放状态的变化
   watch: {
     currentSong( nextSong, prevSong ) {
+      if ( !nextSong.id ) {
+        return;
+      }
+
       if ( nextSong.id === prevSong.id ) {
         return;
       }
+
       if ( this.currentLyric ) {
         this.currentLyric.stop();
         this.currentTime = 0;
         this.playingLyric = '';
         this.currentLyricLineNum = 0;
       }
+
       this.$nextTick(() => {
         this.$refs.audio.play();
         this.getLyric();
@@ -563,7 +541,8 @@ export default {
   components: {
     ProgressBar,
     ProgressCircle,
-    Scroll
+    Scroll,
+    PlayList
   }
 }
 </script>

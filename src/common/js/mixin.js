@@ -1,4 +1,6 @@
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { playmode } from 'common/js/config.js'
+import { shuffle } from 'common/js/utils.js'
 
 
 export const playListMixin = {
@@ -26,5 +28,103 @@ export const playListMixin = {
     handlePlayList() {
       throw new Error( 'Component must implement handlePlayList method!' );
     }
+  }
+}
+
+
+export const playerMixin = {
+  computed: {
+    ...mapGetters([
+      'fullScreen',
+      'playList',
+      'currentSong',
+      'playing',
+      'currentIndex',
+      'mode',
+      'sequenceList'
+    ]),
+
+    iconMode () {
+      return this.mode === playmode.sequence
+        ? 'icon-sequence'
+        : this.mode === playmode.loop
+          ? 'icon-loop'
+          : 'icon-random';
+    },
+  },
+
+  methods: {
+
+    ...mapMutations({
+      shiftFullScreen: 'SET_FULLSCREEN',
+      setPlayState: 'SET_PLAYING_STATE',
+      setCurrentIndex: 'SET_CURRENTINDEX',
+      setPlayMode: 'SET_PLAY_MODE',
+      setPlayList: 'SET_PLAYLIST'
+    }),
+
+
+    // 改变播放模式 随机 / 循环 / 顺序
+    changeMode() {
+      let currentMode = (this.mode + 1) % 3;
+      this.setPlayMode( currentMode );
+      let list = null;
+      if ( this.playmode === playmode.random ) {
+        list = shuffle( this.sequenceList );
+      } else {
+        list = this.sequenceList;
+      }
+
+      this._resetCurrentIndex( list )
+      this.setPlayList( list );
+    },
+
+    _resetCurrentIndex( list ) {
+      let index = list.findIndex( ( item ) => {
+        return item.id === this.currentSong.id;
+      });
+      this.setCurrentIndex( index );
+    }
+  }
+}
+
+
+export const searchMixin = {
+  data() {
+    return {
+      query: '',
+      refreshDelay: 100
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'searchHistory'
+    ]),
+  },
+
+
+  methods: {
+
+    ...mapActions({
+      saveSearchHistory: 'saveSearchHistory',
+      deleteSearchHistory: 'deleteSearchHistory',
+    }),
+
+    saveSearch() {
+      this.saveSearchHistory( this.query );
+    },
+
+    listScroll() {
+      console.log( this.$refs );
+      this.$refs.searchBox.blur();
+    },
+
+    onQueryChange( newQuery ) {
+      this.query = newQuery;
+    },
+
+    addQuery( newQuery ) {
+      this.$refs.searchBox.setQuery( newQuery );
+    },
   }
 }
