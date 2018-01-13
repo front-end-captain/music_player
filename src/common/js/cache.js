@@ -1,10 +1,14 @@
 import storage from 'good-storage'
+import { favoriteList } from '../../store/getters';
 
 const SEARCH_KEY = '__search__';
 const SEARCH_MAX_LEHGTH = 15;
 
-const PLAY_KEY = '__play__'
+const PLAY_KEY = '__play__';
 const PLAY_MAX_LENGTH = 200;
+
+const FAVORITE_KEY = '__FAV__';
+const FAVORITE_MAX_LENGTH = 200;
 
 
 /**
@@ -119,4 +123,32 @@ export const savePlayHistoryEntry = ( entry ) => {
 
 export const loadPlayHistory = () => {
   return storage.get( PLAY_KEY, [] );
+}
+
+
+export const saveFavoriteEntry = ( song ) => {
+  let favorites = storage.get( FAVORITE_KEY, [])
+  let newFavorites = insertItemToArray( song, favorites, ( item ) => {
+    return song.id === item.id
+  }, FAVORITE_MAX_LENGTH)
+
+  storage.set( FAVORITE_KEY, newFavorites );
+
+  return newFavorites;
+}
+
+
+export const deleteFavoriteEntry = ( song ) => {
+  let favorites = storage.get( FAVORITE_KEY, [] );
+
+  let newFavorites = deleteItemFromArray( favorites, ( item ) => {
+    return item.id === song.id
+  });
+
+  storage.set( FAVORITE_KEY, newFavorites );
+  return newFavorites;
+}
+
+export const loadFavoriteEntries = () => {
+  return storage.get( FAVORITE_KEY, [] );
 }

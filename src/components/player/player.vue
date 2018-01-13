@@ -94,8 +94,8 @@
             <div class="icon i-right">
               <i class="icon-next" @click="nextSong"></i>
             </div>
-            <div class="icon i-right">
-              <i class="icon-not-favorite"></i>
+            <div class="icon i-right" >
+              <i :class="getFavoriteIcon(currentSong)" @click="toggleFavoriteIcon(currentSong)"></i>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@
     <audio
       :src="currentSong.url"
       ref="audio"
-      @canplay="ready"
+      @play="ready"
       @error="error"
       @timeupdate="updateTime"
       @ended="end"
@@ -259,6 +259,7 @@ export default {
         return;
       }
       if ( this.currentIndex > this.playList.length - 1 || this.currentIndex === this.playList.length - 1 ) {
+        this.loop();
         return
       }
       let index = this.currentIndex;
@@ -376,6 +377,9 @@ export default {
     async getLyric() {
       try {
         let lyric = await this.currentSong.createLyric()
+        if ( this.currentSong.lyric !== lyric ) {
+          return;
+        }
         this.currentLyric = new LyricParser( lyric, this.handleLyric );
 
         // 歌曲无歌词
@@ -525,10 +529,12 @@ export default {
         this.currentLyricLineNum = 0;
       }
 
-      this.$nextTick(() => {
+      // 保证快速切歌下 歌词和歌曲播放同步
+      clearTimeout( this.timer );
+      this.timer = setTimeout( () => {
         this.$refs.audio.play();
         this.getLyric();
-      })
+      }, 1000)
     },
     playing( flag ) {
       this.$nextTick( ()=> {

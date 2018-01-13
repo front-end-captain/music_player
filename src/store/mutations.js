@@ -34,7 +34,11 @@ const mutations = {
   },
   [types.SET_PLAYHISTORY]( state, playHistory ) {
     state.playHistory = playHistory;
+  },
+  [types.SET_FAVORITELIST]( state, list ) {
+    state.favoriteList = list
   }
+
 }
 
 export default mutations;

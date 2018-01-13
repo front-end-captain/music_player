@@ -5,7 +5,9 @@ import {
   saveSearchEntry,
   deleteSearchEntry,
   clearSearchEntries,
-  savePlayHistoryEntry
+  savePlayHistoryEntry,
+  saveFavoriteEntry,
+  deleteFavoriteEntry
 } from 'common/js/cache.js'
 
 
@@ -26,7 +28,7 @@ export const selectPlay = ( { commit, state }, { list, index } ) => {
 /**
  * @description 随机播放
  */
-export const randomPlay = ( {commit }, { list } ) => {
+export const randomPlay = ( { commit }, { list } ) => {
   commit( types.SET_PLAY_MODE, playmode.random );
   commit( types.SET_SEQUENCELIST, list );
 
@@ -164,4 +166,13 @@ export const clearPlayList = ( { commit } ) => {
 
 export const savePlayHistory = ({ commit, state }, song ) => {
   commit( types.SET_PLAYHISTORY, savePlayHistoryEntry( song ) );
+}
+
+
+export const saveFavorite = ( { commit, state }, song ) => {
+  commit( types.SET_FAVORITELIST, saveFavoriteEntry( song ) );
+}
+
+export const deleteFavorite = ( { commit, state }, song ) => {
+  commit( types.SET_FAVORITELIST, deleteFavoriteEntry( song ) );
 }
