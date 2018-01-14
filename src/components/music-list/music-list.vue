@@ -35,8 +35,11 @@
       <div class="song-list-wrapper">
         <song-list :songs="songs" @select="selectItem" :rank="rank"></song-list>
       </div>
-      <div class="loading-container" v-show="!songs.length > 0">
+      <div class="loading-container" v-show="!songs.length > 0 && !loadFailed">
         <loading></loading>
+      </div>
+      <div class="loading-container" v-show="loadFailed">
+        <no-result title="网络好像出错了-_-"></no-result>
       </div>
     </scroll>
     <!-- 歌曲列表 结束 -->
@@ -48,6 +51,7 @@
 import Scroll from 'base/scroll/scroll.vue'
 import SongList from 'base/song-list/song-list.vue'
 import Loading from 'base/loading/loading.vue'
+import NoResult from "base/no-result/no-result.vue";
 import { mapActions } from 'vuex'
 import { playListMixin } from 'common/js/mixin.js'
 
@@ -72,6 +76,10 @@ export default {
       default: ''
     },
     rank: {
+      type: Boolean,
+      default: false
+    },
+    loadFailed: {
       type: Boolean,
       default: false
     }
@@ -191,7 +199,8 @@ export default {
   components: {
     Scroll,
     SongList,
-    Loading
+    Loading,
+    NoResult
   }
 }
 </script>

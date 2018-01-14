@@ -4,6 +4,7 @@
       :songs="songs"
       :title="title"
       :bgImg="bgImg"
+      :loadFailed="loadFailed"
     ></music-list>
   </transition>
 </template>
@@ -22,7 +23,8 @@ export default {
 
   data() {
     return {
-      songs: []
+      songs: [],
+      loadFailed: false
     }
   },
 
@@ -45,34 +47,45 @@ export default {
   methods: {
 
     // 获取歌手详情 若是 id 不存在 则跳转至歌手列表页
-    _getSingerDetail() {
+    async _getSingerDetail() {
       if ( !this.singer.id ) {
         this.$router.push({
           path: '/singer'
         });
         return;
       }
-      getSingerDetail( this.singer.id ).then( response => {
-        if ( response.code === ERR_OK ) {
-          this._normalizeSonglist( response.data.list ).then( ret => {
-            this.songs = ret;
-          });
+
+      let response = null;
+
+      try {
+        response = await getSingerDetail( this.singer.id );
+      } catch ( e ) {
+        this.loadFailed = true;
+        return;
+      }
+
+      if ( response.code === ERR_OK ) {
+        try {
+          let ret = await this._normalizeSonglist( response.data.list );
+          this.songs = ret;
+        } catch ( e ) {
+          this.loadFailed = true;
         }
-      })
+      }
     },
 
     // 格式化歌曲详情数据 剔除一些无用数据
     async _normalizeSonglist( list ) {
       let ret = [];
-      await list.forEach( item => {
-        let { musicData } = item;
 
+      let promises = list.map( item => {
+        let { musicData } = item;
         if ( musicData.songid && musicData.albummid ) {
-          createSong( musicData ).then( newSong => {
-            ret.push( newSong )
-          })
+          return createSong( musicData );
         }
       });
+
+      ret = await Promise.all( promises );
       return ret;
     }
   },

@@ -8,7 +8,8 @@ export const commonConfig = {
 }
 
 export const options = {
-  param: 'jsonpCallback'
+  param: 'jsonpCallback',
+  timeout: 3000
 }
 
 export const ERR_OK = 0

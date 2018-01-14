@@ -1,6 +1,12 @@
 <template>
   <transition name="slider">
-    <music-list :title="title" :bgImg="bgImage" :songs="songs" :rank="isRank"></music-list>
+    <music-list
+      :title="title"
+      :bgImg="bgImage"
+      :songs="songs"
+      :rank="isRank"
+      :loadFailed="loadFailed"
+    ></music-list>
   </transition>
 </template>
 
@@ -28,7 +34,9 @@ export default {
       songs: [],
 
       // 是否对排名前三的歌曲进行高亮显示
-      isRank: true
+      isRank: true,
+
+      loadFailed: false
     }
   },
 
@@ -55,10 +63,21 @@ export default {
         });
         return;
       }
-      let res = await getRankList( this.rankList.id );
+
+      let res = null;
+      try {
+        res = await getRankList( this.rankList.id );
+      } catch ( e ) {
+        this.loadFailedsongs = true;
+        return;
+      }
 
       if ( res.code === 0 ) {
-        this.songs = await this._normalizeSonglist( res.songlist );
+        try {
+          this.songs = await this._normalizeSonglist( res.songlist );
+        } catch ( e ) {
+          this.loadFailed = true;
+        }
       }
     },
 

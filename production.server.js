@@ -1,0 +1,88 @@
+const express = require( 'express' );
+const config = require( './config' );
+
+const axios = require( 'axios' );
+
+const PORT = process.env.PORT || config.build.port;
+
+const app = express();
+
+
+app.use( function ( request, response, next ) {
+	console.log( "The request type is " + request.method + "; request url is " + request.originalUrl );
+	next();
+});
+
+const ApiRouter = express.Router();
+
+// 获取首页推荐数据
+ApiRouter.use( '/getDiscList', ( request, response ) => {
+  let url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
+  axios.get( url,{
+    headers: {
+      Referer: 'https://y.qq.com/portal/playlist.html'
+    },
+    params: request.query
+  }).then( ( res ) => {
+    response.json( res.data )
+  }).catch( ( error ) => {
+    console.log( error );
+  })
+})
+
+// 获取歌曲歌词数据
+ApiRouter.use( '/getLyric', ( request, response ) => {
+  let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://c.y.qq.com/',
+      host: 'c.y.qq.com'
+    },
+    params: request.query
+  })
+  .then( res => {
+    let ret = res.data;
+
+    if (typeof ret === 'string') {
+      var reg = /^\w+\(({[^()]+})\)$/
+      var matches = ret.match(reg)
+      if (matches) {
+        ret = JSON.parse(matches[1])
+      }
+    }
+    response.json( ret )
+  })
+  .catch( error => {
+    console.log( error )
+  })
+})
+
+// 获取歌单列表数据
+ApiRouter.use( '/getSongList', ( request, response ) => {
+  let url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg';
+
+  axios.get( url,{
+    headers: {
+      Referer: `https://y.qq.com/n/yqq/playlist/${request.query.disstid}.html`
+    },
+    params: request.query
+  }).then( ( res ) => {
+    response.json( res.data )
+  }).catch( ( error ) => {
+    console.log( error );
+  })
+})
+
+app.use( '/api', ApiRouter );
+app.use( express.static( 'dist') );
+
+
+
+const server = app.listen( PORT, "localhost", () => {
+  let host = server.address().address;
+  let port = server.address().port;
+  console.log( "The server is listening at http://%s:%s", host, port );
+});
+
+module.exports = server;

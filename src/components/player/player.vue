@@ -233,8 +233,10 @@ export default {
 
     // 切换播放 暂停 同时歌词暂停或者开始滚动
     togglePlayState() {
-      this.setPlayState( !this.playing )
-      this.playing ? this.currentLyric.play() : this.currentLyric.stop()
+      this.setPlayState( !this.playing );
+      if ( this.currentLyric ) {
+        this.playing ? this.currentLyric.play() : this.currentLyric.stop()
+      }
     },
 
     // 上一首歌曲
@@ -376,7 +378,7 @@ export default {
     // 创建歌曲歌词
     async getLyric() {
       try {
-        let lyric = await this.currentSong.createLyric()
+        let lyric = await this.currentSong.createLyric();
         if ( this.currentSong.lyric !== lyric ) {
           return;
         }
