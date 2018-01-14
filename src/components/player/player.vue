@@ -431,19 +431,18 @@ export default {
       if ( !this.touch.init ) {
         return;
       }
-      if ( !this.touch.isFirstTouch ) {
-        this.touch.isFirstTouch = true;
-      }
 
       // x y 向的位移
       let deltaX = event.touches[0].pageX - this.touch.startX;
       let deltaY = event.touches[0].pageY - this.touch.startY;
 
-
       // 竖向滑动无效（不进行切换）同时在执行 touchend 时直接跳出执行 不进行切换
       if ( Math.abs(deltaY) > Math.abs(deltaX) ) {
-        this.touch.isFirstTouch = true;
         return;
+      }
+
+      if ( !this.touch.isFirstTouch ) {
+        this.touch.isFirstTouch = true;
       }
 
 
@@ -502,6 +501,7 @@ export default {
       const time = 300;
       this.$refs.lyricList.$el.style.transform = `translateX(${offsetWidth}px)`;
       this.$refs.lyricList.$el.style.transitionDuration = `${time}ms`;
+      this.$refs.lyricList.$el.style.opacity = opacity === 0 ? 1 : 0;
       this.$refs.middleLeft.style.opacity = opacity;
       this.$refs.middleLeft.style.transitionDuration = `${time}ms`;
       this.touch.init = false;

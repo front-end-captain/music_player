@@ -9,6 +9,14 @@ import VueLazyload from 'vue-lazyload'
 import 'common/stylus/index.styl'
 import 'swiper/dist/css/swiper.css'
 
+
+// 引入 vconsole 解决手机端调试问题
+/* eslint-disable no-unused-vars */
+// import VConsole from 'vconsole'
+/* eslint-disable no-unused-vars */
+// const vConsole = new VConsole();
+
+
 // 引入 fastclick 解决移动端点击事件的 300ms 延时问题
 FastClick.attach(document.body)
 
