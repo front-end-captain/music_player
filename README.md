@@ -13,3 +13,6 @@ npm run dev
 
 # build for production with minification
 npm run build
+
+# run production at localhhost:9000
+npm run production
