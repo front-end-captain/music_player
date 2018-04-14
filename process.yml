@@ -1,6 +1,6 @@
 apps:
   - script: ./production.server.js
-    name: cnode
+    name: music
     env:
       NODE_ENV: production
       HOST: localhost
