@@ -1,5 +1,6 @@
 import jsonp from 'common/js/jsonp.js';
 import { commonConfig, options } from './config.js';
+import Axios from 'axios';
 
 /**
  * @description 获取热门搜索关键词
@@ -23,8 +24,8 @@ const getHotKey = () => {
  * @param {Boolean} hasZhiDa 搜索结果是否有 ‘zhida’ 字段 表示该条搜索结果直达歌手详情页
  * @param {Number} perpage 每一页要显示的搜索结果条数
  */
-const getSearchResult = ( keyword, pageNum, hasZhiDa, perpage ) => {
-  let url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp';
+const getSearchResult = async ( keyword, pageNum, hasZhiDa, perpage ) => {
+  const url = 'api/getSearchResult';
   let query = {
     g_tk: 5381,
     uin: 0,
@@ -44,7 +45,9 @@ const getSearchResult = ( keyword, pageNum, hasZhiDa, perpage ) => {
     _: 1515593122083
   };
 
-  return jsonp( url, query, options );
+  const res = await Axios.get(url, { params: query });
+
+  return res.data;
 }
 
 export { getHotKey, getSearchResult }

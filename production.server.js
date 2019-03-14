@@ -8,7 +8,7 @@ const PORT = process.env.PORT || config.build.port;
 const app = express();
 
 
-app.use( function ( request, response, next ) {
+app.use( function ( request, _, next ) {
 	console.log( "The request type is " + request.method + "; request url is " + request.originalUrl );
 	next();
 });
@@ -73,6 +73,40 @@ ApiRouter.use( '/getSongList', ( request, response ) => {
     console.log( error );
   })
 })
+
+
+// 获取搜索结果
+ApiRouter.use('/getSearchResult', (request, response) => {
+  const url = "https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp";
+
+  axios.get(url, {
+    params: request.query,
+    headers: {
+      Referer: "https://y.qq.com/m/index.html",
+      Origin: "https://y.qq.com",
+    }
+  })
+  .then((res) => {
+    let data;
+    const callback = (result) => {
+      data = result;
+    };
+
+    // 这里也可以用 eval 来执行 jsonp callback
+    // 目的是为了拿到传递给 jsonp callback 的参数
+    const script = new vm.Script(res.data);
+    const context = vm.createContext({
+      callback,
+      global: this,
+    });
+    script.runInNewContext(context);
+
+    response.json(data);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+});
 
 app.use( '/api', ApiRouter );
 app.use( express.static( 'dist') );
